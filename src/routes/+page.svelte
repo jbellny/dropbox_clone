@@ -1,27 +1,27 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-	import { auth, db } from '../firebaseConfig';
-	import toast from 'svelte-french-toast';
-	import { doc, setDoc } from 'firebase/firestore';
-	import { goto } from '$app/navigation';
-	const provider = new GoogleAuthProvider();
+	import Button from '$lib/components/ui/button/button.svelte'
+	import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+	import { auth, db } from '../firebaseConfig'
+	import toast from 'svelte-french-toast'
+	import { doc, setDoc } from 'firebase/firestore'
+	import { goto } from '$app/navigation'
+	const provider = new GoogleAuthProvider()
 
 	async function signInWithGoogle() {
 		try {
-			const { user } = await signInWithPopup(auth, provider);
-			const idToken = await user.getIdToken();
+			const { user } = await signInWithPopup(auth, provider)
+			const idToken = await user.getIdToken()
 			const response = await fetch('/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify(idToken)
-			});
+			})
 
 			if (!response.ok) {
-				const errorResponse = await response.json();
-				toast.error(errorResponse.message);
+				const errorResponse = await response.json()
+				toast.error(errorResponse.message)
 			}
 
 			await setDoc(doc(db, 'users', user.uid), {
@@ -29,14 +29,14 @@
 				name: user.displayName,
 				profilePic: user.photoURL,
 				uid: user.uid
-			});
+			})
 
-			toast.success('Welcome to DropBox Spaces, redirecting...');
+			toast.success('Welcome to DropBox Spaces, redirecting...')
 
-			goto('/dashboard');
+			goto('/dashboard')
 		} catch (error) {
-			const errorMessage = (error as Error).message;
-			toast.error(errorMessage);
+			const errorMessage = (error as Error).message
+			toast.error(errorMessage)
 		}
 	}
 </script>
@@ -57,7 +57,7 @@
 		</Button>
 	</div>
 	<!-- add back autoplay and loop -->
-	<video src="/dbx1-hero-1920x1080.mp4" class="mt-10" playsinline muted>
+	<video src="/dbx1-hero-1920x1080.mp4" class="mt-10" playsinline muted autoplay loop>
 		<track kind="captions" />
 	</video>
 </div>
